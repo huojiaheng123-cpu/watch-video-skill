@@ -25,6 +25,18 @@ compatibility: Requires Python, Node.js, FFmpeg/ffprobe, Playwright, browser pre
 
 ## 默认流程
 
+### 执行 checklist
+
+每次视频分析都按这个顺序推进，不要跳步：
+
+- [ ] 运行 `python scripts/check_capabilities.py`，记录当前能力等级。
+- [ ] 根据输入类型选择默认路径：本地视频走 `media_probe.py`，网页视频走 `browser_watch_url.cjs`。
+- [ ] 生成或收集观看证据：媒体信息、关键帧、联系图、音频、转写。
+- [ ] 对照 `references/evidence-checklist.md` 判断证据是否足够。
+- [ ] 深度分析时使用 `references/analysis-template.md`。
+- [ ] 交付前用 `references/quality-rubric.md` 自评；有 0 分项时先补证据或说明降级。
+- [ ] 最终回答必须区分“已确认”“推断”“未确认”。
+
 1. **确认输入类型**
    - 先运行能力体检：`python scripts/check_capabilities.py`。
    - 如果能力不是 `full`，先向用户报告缺什么、有什么影响、怎么补；不要直接假装能完整观看。
@@ -59,18 +71,7 @@ compatibility: Requires Python, Node.js, FFmpeg/ffprobe, Playwright, browser pre
 
 ## 推荐输出结构
 
-短任务可以直接回答。深度视频分析建议包含：
-
-- 观看状态：已播放 / 只打开页面 / 被拦截 / 只能静态分析。
-- 证据摘要：时长、分辨率、音轨、关键帧、转写文件。
-- 时间线概览：按时间点说明视频内容。
-- 博主观点：视频真正想表达的 1-3 个核心意思。
-- 论证拆解：观点如何被包装、证明或推动。
-- 可信度判断：哪些可信、哪些需要验证、哪些可能是营销或情绪化表达。
-- 对你的启发：结合用户正在做的 AI、视频、外贸、skill、知识库等方向。
-- 你应该做什么：具体到下一步行动、文档、实验、产品化或自动化。
-- 可沉淀资产：这条视频能否变成脚本、服务、skill、选题、提示词或项目案例。
-- 不确定性：没有看清、没听清、被平台限制或需要人工确认的部分。
+短任务可以直接回答。深度视频分析必须读取 `references/analysis-template.md`，并按模板输出。
 
 ## 脚本
 
@@ -81,6 +82,17 @@ compatibility: Requires Python, Node.js, FFmpeg/ffprobe, Playwright, browser pre
 - `scripts/video_transcribe.py`：用 faster-whisper 转写音频，输出 JSON、SRT、TXT。
 
 本地环境支持脚本时优先使用脚本；不支持时仍要遵守“证据优先、诚实说明边界、分析必须可追溯”的流程。
+
+## Gotchas
+
+- 安装 GitHub skill 不会自动安装 Codex Browser 插件；插件缺失时只能用脚本和文件证据替代。
+- 能打开网页不等于视频真的播放了；必须确认 `<video>`、播放状态、时间点截图或媒体流。
+- 页面标题、评论、封面、推荐文案不能当成视频主体内容。
+- 单张截图不等于看完视频；至少需要多时间点关键帧或联系图。
+- 有背景音乐不等于有口播；转写为空或低质量时要标注“不能依据口播分析”。
+- 网页视频常被登录、验证码、地区、反爬或试看限制拦截；遇到限制必须说明边界。
+- Playwright 安装成功不代表系统 Chrome 存在；脚本会优先找 Chrome/Edge，找不到再用 Playwright Chromium。
+- 不到 `full` 也可以工作，但必须说清降级影响，不能声称“完整看完并听懂”。
 
 ## 能力升级规则
 
