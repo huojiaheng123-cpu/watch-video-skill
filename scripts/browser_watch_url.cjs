@@ -1,5 +1,6 @@
 const fs = require("fs/promises");
 const path = require("path");
+const fsSync = require("fs");
 const { chromium } = require("playwright");
 
 function safeName(value) {
@@ -8,6 +9,27 @@ function safeName(value) {
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 80);
+}
+
+function findBrowserExecutable() {
+  const candidates = [
+    process.env.BROWSER,
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    path.join(process.env.LOCALAPPDATA || "", "Google\\Chrome\\Application\\chrome.exe"),
+    path.join(process.env.LOCALAPPDATA || "", "Microsoft\\Edge\\Application\\msedge.exe"),
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+  ].filter(Boolean);
+
+  for (const candidate of candidates) {
+    if (!String(candidate).includes(" ") || fsSync.existsSync(candidate)) {
+      if (fsSync.existsSync(candidate)) return candidate;
+    }
+  }
+  return null;
 }
 
 async function main() {
@@ -20,15 +42,20 @@ async function main() {
   const outDir = path.join(process.cwd(), "video-watch-output", slug);
   await fs.mkdir(outDir, { recursive: true });
 
-  const browser = await chromium.launch({
-    executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  const executablePath = findBrowserExecutable();
+  const launchOptions = {
     headless: true,
     args: [
       "--disable-blink-features=AutomationControlled",
       "--no-sandbox",
       "--autoplay-policy=no-user-gesture-required",
     ],
-  });
+  };
+  if (executablePath) {
+    launchOptions.executablePath = executablePath;
+  }
+
+  const browser = await chromium.launch(launchOptions);
 
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },

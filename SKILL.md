@@ -25,6 +25,8 @@ description: 当用户要求 Codex 观看、检查、理解、总结或深度分
 ## 默认流程
 
 1. **确认输入类型**
+   - 先运行能力体检：`python scripts/check_capabilities.py`。
+   - 如果能力不是 `full`，先向用户报告缺什么、有什么影响、怎么补；不要直接假装能完整观看。
    - 本地视频文件：用 FFprobe 读取时长、编码、分辨率、音轨。
    - 网页/短视频链接：用真实浏览器打开，确认是否出现 `<video>` 元素并能播放。
    - 只有截图、封面或文字：说明只能做静态图/文本分析，不能声称看过视频。
@@ -71,8 +73,26 @@ description: 当用户要求 Codex 观看、检查、理解、总结或深度分
 
 ## 脚本
 
+- `scripts/check_capabilities.py`：检查当前电脑距离 `full` 视频分析能力还缺什么。
+- `scripts/setup_full.py`：尽量自动安装本地 Python/Node/Playwright 依赖；系统软件和 Codex 插件需要用户确认。
 - `scripts/browser_watch_url.cjs`：用 Chrome/Playwright 打开网页链接、尝试播放视频、保存页面信息和关键帧。
 - `scripts/media_probe.py`：读取本地或远程媒体信息，生成联系图和音频文件。
 - `scripts/video_transcribe.py`：用 faster-whisper 转写音频，输出 JSON、SRT、TXT。
 
 本地环境支持脚本时优先使用脚本；不支持时仍要遵守“证据优先、诚实说明边界、分析必须可追溯”的流程。
+
+## 能力升级规则
+
+目标是把对方电脑拉到 `full`，但必须分清哪些能自动装、哪些需要用户确认：
+
+- 可以自动或半自动安装：`requirements.txt`、`package.json`、Playwright Chromium。
+- 需要系统安装或用户确认：FFmpeg、Chrome/Edge、GPU 驱动。
+- 不能由 GitHub skill 静默安装：Codex Browser 插件、其他 Codex 插件或用户账号级连接器。
+
+当用户说“帮我把这个 skill 装到最好”时：
+
+1. 运行 `python scripts/check_capabilities.py`。
+2. 如果缺本地依赖，建议运行 `python scripts/setup_full.py`。
+3. 如果缺 FFmpeg/Chrome/Codex Browser 插件，给出具体安装步骤。
+4. 每补一项后重新运行体检。
+5. 只有达到 `full` 或用户接受降级后，才开始深度分析视频。

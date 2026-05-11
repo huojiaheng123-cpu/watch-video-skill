@@ -9,3 +9,9 @@ __pycache__/
 .venv/
 .venvs/
 node_modules/
+package-lock.json
+.pytest_cache/
+*.pyc
+*.srt
+*.json
+!package.json
