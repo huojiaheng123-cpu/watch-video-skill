@@ -1,0 +1,11 @@
+video-watch-output/
+*.wav
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.log
+__pycache__/
+.venv/
+.venvs/
+node_modules/
