@@ -1,6 +1,7 @@
 ---
-name: watch-video
+name: watch-video-skill
 description: 当用户要求 Codex 观看、检查、理解、总结或深度分析视频文件/视频链接时使用，包括本地 MP4、网页视频、抖音/TikTok/短视频链接、课程片段、录屏、生成视频、口播干货视频。用于真实播放视频、抽帧复查、媒体探测、口播转写、时间线梳理、观点拆解、可信度判断、启发提炼和行动建议。
+compatibility: Requires Python, Node.js, FFmpeg/ffprobe, Playwright, browser preview support, and optional faster-whisper for full video analysis.
 ---
 
 # 看视频
