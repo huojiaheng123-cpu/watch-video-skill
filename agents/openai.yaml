@@ -1,7 +1,7 @@
 interface:
-  display_name: "高级看视频"
-  short_description: "真实观看视频并做深度拆解"
-  default_prompt: "使用 $watch-video 观看这个视频，确认是否真实播放，提取关键帧和口播转写，按时间线总结内容，拆解博主观点、可信度、对我的启发和我应该做什么。"
+  display_name: "看懂视频"
+  short_description: "真实读取视频并生成可信学习总结观点判断启发与行动建议"
+  default_prompt: "使用 $watch-video 观看这个视频，确认是否真实播放或读取，提取关键帧/图文帧和口播转写，按时间线总结内容，拆解博主观点、可信度、对我的启发和我应该做什么。不要生成复刻拆解或 HTML 案例报告。"
 
 policy:
   allow_implicit_invocation: true
